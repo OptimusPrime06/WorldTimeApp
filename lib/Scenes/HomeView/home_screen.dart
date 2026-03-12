@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:world_time_app/Scenes/HomeView/home_view_model.dart';
 
 
 class HomeScreen extends StatefulWidget{
@@ -8,6 +9,19 @@ class HomeScreen extends StatefulWidget{
 
 class _HomeScreenState extends State<HomeScreen> {
 
+  late HomeViewModelMiddleWare viewModel;
+
+  bool isMorning() {
+    return viewModel.cityData!.time.endsWith('AM') ? true : false ;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    viewModel = HomeViewModel(cityData: arguments['cityData']);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-              image: AssetImage('assets/backgroundImages/night.jpeg'),
+              image: isMorning() ? AssetImage('assets/backgroundImages/morning.jpg') : AssetImage('assets/backgroundImages/night.jpeg'),
               fit: BoxFit.cover
           ),
 
@@ -26,17 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                'This home Screen',
-                style: TextStyle(
-                  fontSize: 32.0,
-                  color: Colors.white
-                ),
-
-              ),
-
-              SizedBox(height: 5.0),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -61,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
-                              color: Colors.grey[400]
+                              color: Colors.grey[400],
                             ),
 
                           ),
@@ -75,6 +78,43 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
 
                 ],
+              ),
+
+              SizedBox(height: 15.0,),
+
+              Text(
+                viewModel.cityData?.name ?? '',
+                style: TextStyle(
+                  fontSize: 24.0,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                        color: Colors.black,
+                        offset: Offset(5, 5),
+                        blurRadius: 5
+                    ),
+                  ]
+                ),
+
+              ),
+
+              SizedBox(height: 5.0,),
+
+              Text(
+                viewModel.cityData?.time ?? ' ',
+                style: TextStyle(
+                  fontSize: 82.0,
+                  color: Colors.white,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black,
+                      offset: Offset(5, 5),
+                      blurRadius: 5
+                    ),
+                  ]
+                ),
+
               ),
 
             ],

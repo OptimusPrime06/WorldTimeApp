@@ -2,6 +2,7 @@ import 'package:world_time_app/Data/Models/world_time_response_model.dart';
 import 'package:intl/intl.dart';
 
 final class CityEntity {
+
   final String name;
   final String time;
   final String flagImage;
@@ -24,6 +25,7 @@ final class CityEntity {
         time: DateFormat.jm().format(now),
         flagImage: '$cityName.png',
     );
+
   }
 
 }

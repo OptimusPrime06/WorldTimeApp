@@ -6,6 +6,7 @@ abstract class WorldTimeUseCaseMiddleWare {
 }
 
 class WorldTimeUseCase extends WorldTimeUseCaseMiddleWare {
+
   final WorldTimeRepoMiddleWare worldTimeRepo;
 
   WorldTimeUseCase({required this.worldTimeRepo});

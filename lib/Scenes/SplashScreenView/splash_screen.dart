@@ -1,34 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:world_time_app/Data/WorldTimeRepo/world_time_repo.dart';
-import 'package:world_time_app/Domain/WorldTimeUseCase/world_time_use_case.dart';
+import 'package:world_time_app/Constants/constants.dart';
 import 'package:world_time_app/Scenes/SplashScreenView/splash_screen_view_model.dart';
+import 'dart:math';
 
 class SplashScreen extends StatefulWidget {
 
+  // Variables
+  final SplashScreenViewModelMiddleWare viewModel;
+
+  // Constructors
+  const SplashScreen({required this.viewModel});
+
   @override
   State<SplashScreen> createState() => _SplashScreenState();
+
 }
 
 class _SplashScreenState extends State<SplashScreen> {
 
+  // Variables
   late SplashScreenViewModelMiddleWare viewModel;
 
-
-  void getTime() async {
-    await viewModel.getTimeFor('Egypt');
+  // Private Functions
+  void _getTime() async {
+    await viewModel.getTimeFor(Constants.countries[Random().nextInt(Constants.countries.length)]);
     Navigator.pushReplacementNamed(context, '/home', arguments: {
       'cityData' : viewModel.getCityData()
     });
   }
 
+  // Life Cycle Functions
   @override
   void initState() {
     super.initState();
-    viewModel = SplashScreenViewModel(worldTimeUseCase: WorldTimeUseCase(worldTimeRepo: WorldTimeRepo()));
-    getTime();
+    viewModel = widget.viewModel;
+    _getTime();
   }
-
 
   @override
   Widget build(BuildContext context) {

@@ -1,25 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:world_time_app/Domain/Entities/city_entity.dart';
 import 'package:world_time_app/Scenes/HomeView/home_view_model.dart';
 
 
-class HomeScreen extends StatefulWidget{
+class HomeScreen extends StatefulWidget {
+
+  final HomeViewModelMiddleWare Function(CityEntity cityData) viewModelFactory;
+
+  const HomeScreen({required this.viewModelFactory});
+
   @override
   State<StatefulWidget> createState() => _HomeScreenState();
+
 }
 
 class _HomeScreenState extends State<HomeScreen> {
 
   late HomeViewModelMiddleWare viewModel;
+  bool _isInitialized = false;
 
-  bool isMorning() {
-    return viewModel.cityData!.time.endsWith('AM') ? true : false ;
+  void initializeViewModel() {
+    final arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final cityData = arguments['cityData'];
+    viewModel = widget.viewModelFactory(cityData);
+    _isInitialized = true;
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    viewModel = HomeViewModel(cityData: arguments['cityData']);
+    _isInitialized ? _isInitialized = true : initializeViewModel();
   }
 
   @override
@@ -29,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-              image: isMorning() ? AssetImage('assets/backgroundImages/morning.jpg') : AssetImage('assets/backgroundImages/night.jpeg'),
+              image: viewModel.isMorning() ? AssetImage('assets/backgroundImages/morning.jpg') : AssetImage('assets/backgroundImages/night.jpeg'),
               fit: BoxFit.cover
           ),
 
@@ -45,8 +55,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
 
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/selectCountry');
+                    onPressed: () async {
+                      dynamic newCityData = await Navigator.pushNamed(context, '/selectCountry');
+                      setState(() {
+                        viewModel.cityData = newCityData['cityData'];
+                      });
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 0.0),
@@ -119,6 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             ],
           ),
+
         ),
 
       ),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:world_time_app/Constants/constants.dart';
+import 'package:world_time_app/Constants/CountriesConsants/countries_constants.dart';
 import 'package:world_time_app/Scenes/SplashScreenView/splash_screen_view_model.dart';
 import 'dart:math';
+
+import 'package:world_time_app/app_routing.dart';
 
 class SplashScreen extends StatefulWidget {
 
@@ -25,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
   // Private Functions
   void _getTime() async {
     await viewModel.getTimeFor(Constants.countries[Random().nextInt(Constants.countries.length)]);
-    Navigator.pushReplacementNamed(context, '/home', arguments: {
+    Navigator.pushReplacementNamed(context, AppRoutes.homeScreen, arguments: {
       'cityData' : viewModel.getCityData()
     });
   }

@@ -1,5 +1,5 @@
 
-class CountryEntity {
+final class CountryEntity {
 
   final String cityName;
   final String cityURL;

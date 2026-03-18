@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:world_time_app/Domain/Entities/city_entity.dart';
+import 'package:world_time_app/Constants/ImageConstants/images_constants.dart';
+import 'package:world_time_app/Constants/StringsConstants/string_constants.dart';
 import 'package:world_time_app/Scenes/HomeView/home_view_model.dart';
-
+import 'package:world_time_app/app_routing.dart';
 
 class HomeScreen extends StatefulWidget {
 
-  final HomeViewModelMiddleWare Function(CityEntity cityData) viewModelFactory;
+  final HomeViewModelInterface viewModel;
 
-  const HomeScreen({required this.viewModelFactory});
+  const HomeScreen({required this.viewModel});
 
   @override
   State<StatefulWidget> createState() => _HomeScreenState();
@@ -16,20 +17,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  late HomeViewModelMiddleWare viewModel;
-  bool _isInitialized = false;
-
-  void initializeViewModel() {
-    final arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    final cityData = arguments['cityData'];
-    viewModel = widget.viewModelFactory(cityData);
-    _isInitialized = true;
-  }
+  late HomeViewModelInterface viewModel;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _isInitialized ? _isInitialized = true : initializeViewModel();
+  void initState() {
+    super.initState();
+    viewModel = widget.viewModel;
   }
 
   @override
@@ -39,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-              image: viewModel.isMorning() ? AssetImage('assets/backgroundImages/morning.jpg') : AssetImage('assets/backgroundImages/night.jpeg'),
+              image: viewModel.isMorning() ? AssetImage(ImagesConstants.morningBackgroundImage) : AssetImage(ImagesConstants.nightBackgroundImage),
               fit: BoxFit.cover
           ),
 
@@ -50,49 +43,6 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-
-                  ElevatedButton(
-                    onPressed: () async {
-                      dynamic newCityData = await Navigator.pushNamed(context, '/selectCountry');
-                      setState(() {
-                        viewModel.cityData = newCityData['cityData'];
-                      });
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 0.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.pin_drop_outlined,
-                            size: 30,
-                            color: Colors.grey[400],
-                          ),
-
-                          Text(
-                            'Select City',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[400],
-                            ),
-
-                          ),
-
-                        ],
-
-                      ),
-
-                    ),
-
-                  ),
-
-                ],
-              ),
-
               SizedBox(height: 15.0,),
 
               Text(
@@ -128,6 +78,63 @@ class _HomeScreenState extends State<HomeScreen> {
                   ]
                 ),
 
+              ),
+
+              Spacer(),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+
+                  ElevatedButton(
+                    onPressed: () async {
+                      dynamic newCityData = await Navigator.pushNamed(context, AppRoutes.selectCountry);
+                      setState(() {
+                        viewModel.cityData = newCityData['cityData'];
+                      });
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 0.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.pin_drop_outlined,
+                            size: 30,
+                            color: Colors.grey[400],
+                            shadows: [
+                              Shadow(
+                                color: Colors.black38,
+                                offset: Offset(1, 1),
+                              ),
+                            ],
+                          ),
+
+                          Text(
+                            StringConstants.homeScreenSelectCityButtonText,
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[400],
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black38,
+                                  offset: Offset(1, 1),
+                                ),
+                              ],
+                            ),
+
+                          ),
+
+                        ],
+
+                      ),
+
+                    ),
+
+                  ),
+
+                ],
               ),
 
             ],

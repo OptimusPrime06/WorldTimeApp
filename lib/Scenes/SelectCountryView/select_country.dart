@@ -48,7 +48,7 @@ class _SelectCountryState extends State<SelectCountry> {
                     _updateTime(index);
                   },
                   leading: CircleAvatar(
-                    backgroundImage: AssetImage('assets/countryFlags/${viewModel.countries[index].flagURL}'),
+                    backgroundImage: AssetImage(viewModel.countries[index].flagURL),
                   ),
                   title: Text(
                     viewModel.countries[index].cityName,
